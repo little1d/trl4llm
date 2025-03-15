@@ -2,7 +2,9 @@
 Configuration class for ruozhiba dataset
 """
 
-from unsloth import FastLanguageModel, is_bfloat16_supported
+from unsloth import FastLanguageModel, is_bfloat16_supported, PathFastRL
+PatchFastRL("GRPO", FastLanguageModel) 
+
 from sentence_transformers import SentenceTransformer
 from reward_score.ruozhiba import (
     strict_format_reward_func,
@@ -29,6 +31,7 @@ class RuozhibaConfig:
             lr_scheduler_type="cosine",
             optim="adamw_8bit",
             logging_steps=1,
+            # 日志
             logging_dir='./gpro_logs',
             bf16=is_bfloat16_supported(),
             fp16=not is_bfloat16_supported(),
@@ -41,32 +44,32 @@ class RuozhibaConfig:
             save_steps=50,
             max_grad_norm=0.1,
             report_to="none",
-            output_dir="grpo_saved_lora",
         )
 
         # Dataset configuration
         self.dataset_config = {
-            "train_path": "./data/processed/train.parquet",
-            "test_path": "./data/processed/test.parquet",
+            "train_path": "/fs-computility/llmit_d/shared/baitianyi/datasets/ruozhiba/train.parquet",
+            "test_path": "/fs-computility/llmit_d/shared/baitianyi/datasets/ruozhiba/test.parquet",
         }
 
         # Save path
-        self.save_dir = "./ruozhiba_grpo"
+        self.save_dir = "./rouzhiba_lora"
 
     def initialize_model(self):
         """Initialize model with LoRA configuration"""
         model, tokenizer = FastLanguageModel.from_pretrained(
-            model_name="LooksJuicy/ruozhiba",
+            model_name="",
             max_seq_length=1024,
             load_in_4bit=True,
             fast_inference=True,
             gpu_memory_utilization=0.6,
         )
-        # 为模型添加LoRA适配器
+        # lora adapter
         model = FastLanguageModel.get_peft_model(
-            model,
-            r=lora_rank,  # LoRA秩
-            target_modules=[  # 应用LoRA的目标模块
+            # model local path
+            model="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
+            r=lora_rank,  
+            target_modules=[ 
                 "q_proj",
                 "k_proj",
                 "v_proj",
@@ -75,16 +78,17 @@ class RuozhibaConfig:
                 "up_proj",
                 "down_proj",
             ],
-            lora_alpha=lora_rank,  # LoRA缩放系数
-            use_gradient_checkpointing="unsloth",  # 启用梯度检查点以支持长序列
-            random_state=666,  # 随机种子
+            lora_alpha=lora_rank,  
+            use_gradient_checkpointing="unsloth",  
+            random_state=666, 
         )
         return model, tokenizer
 
     def initialize_reward_functions(self):
         """Initialize reward functions with semantic model"""
         semantic_model = SentenceTransformer(
-            "paraphrase-multilingual-MiniLM-L12-v2"
+            # semantic_model local path
+            "/fs-computility/llmit_d/shared/baitianyi/model/all-MiniLM-L6-v2"
         )
 
         return [

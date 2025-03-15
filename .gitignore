@@ -11,7 +11,7 @@
 
 # Debug
 **/.pytest_cache/
-playground//playground
+playground/
 
 # OS specific
 .DS_Store

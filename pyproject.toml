@@ -4,7 +4,14 @@ version = "0.0.1"
 description = ""
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["datasets>=3.4.0"]
+dependencies = [
+    "datasets>=3.4.0",
+    "sentence-transformers>=3.4.1",
+    "transformers>=4.49.0",
+    "trl>=0.15.2",
+    "unsloth>=2025.3.14",
+    "vllm>=0.7.3",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["trl4llm"]
