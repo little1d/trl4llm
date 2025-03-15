@@ -29,6 +29,7 @@ class RuozhibaConfig:
             lr_scheduler_type="cosine",
             optim="adamw_8bit",
             logging_steps=1,
+            logging_dir='./gpro_logs',
             bf16=is_bfloat16_supported(),
             fp16=not is_bfloat16_supported(),
             per_device_train_batch_size=1,
@@ -40,7 +41,7 @@ class RuozhibaConfig:
             save_steps=50,
             max_grad_norm=0.1,
             report_to="none",
-            output_dir="outputs",
+            output_dir="grpo_saved_lora",
         )
 
         # Dataset configuration
@@ -48,6 +49,9 @@ class RuozhibaConfig:
             "train_path": "./data/processed/train.parquet",
             "test_path": "./data/processed/test.parquet",
         }
+
+        # Save path
+        self.save_dir = "./ruozhiba_grpo"
 
     def initialize_model(self):
         """Initialize model with LoRA configuration"""

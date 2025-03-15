@@ -41,7 +41,7 @@ def train(config_name):
     trainer = GRPOTrainer(
         model=model,
         tokenizer=tokenizer,
-        args=GRPOConfig(**config.training_args),
+        args=GRPOConfig(config.training_args),
         train_dataset=train_dataset,
         eval_dataset=test_dataset,
         reward_functions=reward_functions,
@@ -55,7 +55,7 @@ def train(config_name):
     )
     trainer.train()
 
-    model.save_lora("grpo_saved_lora")
+    model.save_lora(config.save_dir)
 
 
 if __name__ == "__main__":
