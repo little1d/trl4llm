@@ -39,17 +39,21 @@ if __name__ == "__main__":
             prompt = instruction_raw + "" + instruction_following
 
             answer_raw = example.pop("output")
+            # data = {
+            #     "data_source": data_source,
+            #     "prompt": [{"role": "user", "content": prompt}],
+            #     "ability": "IQ",
+            #     "reward_model": {"style": "rule", "ground_truth": answer_raw},
+            #     "extra_info": {
+            #         "split": split,
+            #         "index": idx,
+            #         "question": instruction_raw,
+            #         "answer": answer_raw,
+            #     },
+            # }
             data = {
-                "data_source": data_source,
-                "prompt": [{"role": "user", "content": prompt}],
-                "ability": "IQ",
-                "reward_model": {"style": "rule", "ground_truth": answer_raw},
-                "extra_info": {
-                    "split": split,
-                    "index": idx,
-                    "question": instruction_raw,
-                    "answer": answer_raw,
-                },
+                "prompt": prompt,
+                "answer": answer_raw
             }
 
             return data

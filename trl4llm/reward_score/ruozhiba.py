@@ -12,46 +12,53 @@ def strict_format_reward_func(completions: List[str], **kwargs) -> List[float]:
     严格格式检查奖励函数
     检查是否包含 <think> 和 <answer> 标签
     """
+    pattern = r"^<think>\n.*?\n</think>\n<answer>\n.*?\n</answer>\n$"
+    responses = [completion[0]["content"] for completion in completions]
+    return [0.5 if re.match(pattern, r) else 0.0 for r in responses]
+
+# 软格式奖励：只需包含 <think> 和 <answer> 部分
+def soft_format_reward_func(completions, **kwargs) -> list[float]:
     pattern = r"<think>.*?</think>\s*<answer>.*?</answer>"
-    return [1.0 if re.search(pattern, c) else 0.0 for c in completions]
+    responses = [completion[0]["content"] for completion in completions]
+    return [0.5 if re.search(pattern, r) else 0.0 for r in responses]
 
-
-def soft_format_reward_func(completions: List[str], **kwargs) -> List[float]:
-    """
-    宽松格式检查奖励函数
-    检查是否包含 <think> 或 <answer> 标签
-    """
-    pattern = r"(<think>.*?</think>|<answer>.*?</answer>)"
-    return [0.5 if re.search(pattern, c) else 0.0 for c in completions]
-
-
-def semantic_similarity_reward_func(
-    completions: List[str],
-    semantic_model,  # 语义模型从外部传入
-    ground_truths: List[str],
-    **kwargs,
-) -> List[float]:
-    """
-    语义相似度奖励函数
-    使用外部传入的语义模型计算相似度
-    """
-    # 计算嵌入
-    completion_embeddings = semantic_model.encode(completions)
-    gt_embeddings = semantic_model.encode(ground_truths)
+#语义相似度奖励
+def semantic_similarity_reward_func(prompts, completions, semantic_model, answer, **kwargs) -> list[float]:
+    responses = [completion[0]['content'].strip() for completion in completions]
+    answer = [a.strip() for a in answer]
 
     # 计算相似度
-    similarities = util.cos_sim(completion_embeddings, gt_embeddings)
-    return [float(s) for s in similarities.diagonal()]
+    similarities = util.cos_sim(semantic_model.encode(responses), semantic_model.encode(answer))
 
-
-def xmlcount_reward_func(completions: List[str], **kwargs) -> List[float]:
-    """
-    XML 标签计数奖励函数
-    检查 <think> 和 <answer> 标签的数量
-    """
     rewards = []
-    for c in completions:
-        think_count = len(re.findall(r"<think>", c))
-        answer_count = len(re.findall(r"<answer>", c))
-        rewards.append(min(think_count + answer_count, 1.0))
+    for sim in similarities.diagonal().tolist():  # 取对角线上的值（单个样本的相似度）
+        if sim > 0.9:
+            rewards.append(2.0)  # 非常接近
+        elif sim > 0.7:
+            rewards.append(1.5)  # 相关性较高
+        elif sim > 0.5:
+            rewards.append(1.0)  # 可能部分正确
+        else:
+            rewards.append(0.0)  # 相关性低
+
     return rewards
+
+
+def count_xml(text) -> float:
+    count = 0.0
+    if text.count("<think>\n") == 1:
+        count += 0.125
+    if text.count("\n</think>\n") == 1:
+        count += 0.125
+    if text.count("\n<answer>\n") == 1:
+        count += 0.125
+        count -= len(text.split("\n</answer>\n")[-1])*0.001
+    if text.count("\n</answer>") == 1:
+        count += 0.125
+        count -= (len(text.split("\n</answer>")[-1]) - 1)*0.001
+    return count
+
+
+def xmlcount_reward_func(completions, **kwargs) -> list[float]:
+    contents = [completion[0]["content"] for completion in completions]
+    return [count_xml(c) for c in contents]

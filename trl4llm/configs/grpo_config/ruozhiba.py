@@ -20,7 +20,7 @@ class RuozhibaConfig:
     def __init__(self):
         # Training parameters
         self.training_args = GRPOConfig(
-            use_vllm=True,
+            # use_vllm=True,
             learning_rate=5e-6,
             adam_beta1=0.9,
             adam_beta2=0.99,
@@ -29,11 +29,11 @@ class RuozhibaConfig:
             lr_scheduler_type="cosine",
             optim="adamw_8bit",
             logging_steps=1,
-            # 日志
+            # 日志存储
             logging_dir="./gpro_logs",
             bf16=is_bfloat16_supported(),
             fp16=not is_bfloat16_supported(),
-            per_device_train_batch_size=1,
+            per_device_train_batch_size=16,
             gradient_accumulation_steps=1,
             num_generations=8,
             max_prompt_length=256,
@@ -61,9 +61,9 @@ class RuozhibaConfig:
             model_name="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
             max_seq_length=1024,
             load_in_4bit=True, # 4 位量化
-            fast_inference=True,
+            # fast_inference=True,
             max_lora_rank=lora_rank,
-            gpu_memory_utilization=0.6,
+            gpu_memory_utilization=0.2,
         )
         # lora adapter
         model = FastLanguageModel.get_peft_model(
@@ -95,7 +95,7 @@ class RuozhibaConfig:
             xmlcount_reward_func,
             soft_format_reward_func,
             strict_format_reward_func,
-            lambda completions, ground_truths: semantic_similarity_reward_func(
+            lambda prompts, completions, ground_truths: semantic_similarity_reward_func(
                 completions, semantic_model, ground_truths
             ),
         ]
