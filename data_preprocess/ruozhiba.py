@@ -5,8 +5,8 @@ import argparse
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local_dir', default='~/data/ruozhiba')
-    parser.add_argument('--cache_dir', default=None)
+    parser.add_argument("--local_dir", default="~/data/ruozhiba")
+    parser.add_argument("--cache_dir", default=None)
 
     args = parser.parse_args()
 
@@ -16,8 +16,8 @@ if __name__ == "__main__":
     # ruozhiba数据库没做 test 数据集，需要手动切分。
     dataset = dataset["train"].train_test_split(test_size=0.2, seed=42)
 
-    train_dataset = dataset['train']
-    test_dataset = dataset['test']
+    train_dataset = dataset["train"]
+    test_dataset = dataset["test"]
 
     instruction_following = (
         r"首先把推理过程想象成内心独白，然后提供最终的答案。推理过程放在<think></think>标签中，答案放在<answer></answer>标签中。"
@@ -35,20 +35,20 @@ if __name__ == "__main__":
     def make_map_fn(split):
 
         def process_fun(example, idx):
-            instruction_raw = example.pop('instruction')
-            prompt = instruction_raw + '' + instruction_following
+            instruction_raw = example.pop("instruction")
+            prompt = instruction_raw + "" + instruction_following
 
-            answer_raw = example.pop('output')
+            answer_raw = example.pop("output")
             data = {
                 "data_source": data_source,
                 "prompt": [{"role": "user", "content": prompt}],
                 "ability": "IQ",
                 "reward_model": {"style": "rule", "ground_truth": answer_raw},
                 "extra_info": {
-                    'split': split,
-                    'index': idx,
-                    'question': instruction_raw,
-                    'answer': answer_raw,
+                    "split": split,
+                    "index": idx,
+                    "question": instruction_raw,
+                    "answer": answer_raw,
                 },
             }
 
@@ -57,10 +57,10 @@ if __name__ == "__main__":
         return process_fun
 
     train_dataset = train_dataset.map(
-        function=make_map_fn('train'), with_indices=True, num_proc=8
+        function=make_map_fn("train"), with_indices=True, num_proc=8
     )
     test_dataset = test_dataset.map(
-        function=make_map_fn('test'), with_indices=True, num_proc=8
+        function=make_map_fn("test"), with_indices=True, num_proc=8
     )
 
     local_dir = os.path.expanduser(args.local_dir)

@@ -2,6 +2,7 @@
 Generic GRPO Trainer implementation
 """
 
+import argparse
 from trl import GRPOConfig, GRPOTrainer
 from datasets import load_from_disk
 from swanlab.integration.transformers import SwanLabCallback
@@ -56,6 +57,17 @@ def train(config_name):
     trainer.train()
 
     model.save_lora(config.save_dir)
+
+
+def parse_args():
+    """Parse command line arguments"""
+    parser = argparse.ArgumentParser(description="Run GRPO training")
+    parser.add_argument(
+        "--config",
+        type=str,
+        help="Name of the configuration to use, Registry it first!",
+    )
+    return parser.parse_args()
 
 
 if __name__ == "__main__":

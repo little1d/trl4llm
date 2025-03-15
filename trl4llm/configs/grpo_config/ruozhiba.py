@@ -3,7 +3,8 @@ Configuration class for ruozhiba dataset
 """
 
 from unsloth import FastLanguageModel, is_bfloat16_supported, PathFastRL
-PatchFastRL("GRPO", FastLanguageModel) 
+
+PatchFastRL("GRPO", FastLanguageModel)
 
 from sentence_transformers import SentenceTransformer
 from reward_score.ruozhiba import (
@@ -32,7 +33,7 @@ class RuozhibaConfig:
             optim="adamw_8bit",
             logging_steps=1,
             # 日志
-            logging_dir='./gpro_logs',
+            logging_dir="./gpro_logs",
             bf16=is_bfloat16_supported(),
             fp16=not is_bfloat16_supported(),
             per_device_train_batch_size=1,
@@ -68,8 +69,8 @@ class RuozhibaConfig:
         model = FastLanguageModel.get_peft_model(
             # model local path
             model="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
-            r=lora_rank,  
-            target_modules=[ 
+            r=lora_rank,
+            target_modules=[
                 "q_proj",
                 "k_proj",
                 "v_proj",
@@ -78,9 +79,9 @@ class RuozhibaConfig:
                 "up_proj",
                 "down_proj",
             ],
-            lora_alpha=lora_rank,  
-            use_gradient_checkpointing="unsloth",  
-            random_state=666, 
+            lora_alpha=lora_rank,
+            use_gradient_checkpointing="unsloth",
+            random_state=666,
         )
         return model, tokenizer
 
