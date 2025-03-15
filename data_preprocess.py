@@ -20,6 +20,7 @@ XML_COT_FORMAT = """\
 </answer>
 """
 
+
 # 读取自定义数据集 ruozhiba.json
 def load_custom_dataset(file_path="ruozhiba.json") -> Dataset:
     with open(file_path, "r", encoding="utf-8") as f:
@@ -34,7 +35,7 @@ def load_custom_dataset(file_path="ruozhiba.json") -> Dataset:
         # 设定 prompt 格式（符合 chat 训练格式）
         prompt = [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": instruction}
+            {"role": "user", "content": instruction},
         ]
 
         processed_data.append({"prompt": prompt, "answer": output})

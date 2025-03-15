@@ -1,0 +1,17 @@
+# Python
+**/__pycache__/
+**/*.egg-info/
+
+# Environment
+.venv*/
+.env
+
+# Datasets
+/data
+
+# Debug
+**/.pytest_cache/
+playground//playground
+
+# OS specific
+.DS_Store
