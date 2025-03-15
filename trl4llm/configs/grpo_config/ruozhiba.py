@@ -2,21 +2,18 @@
 Configuration class for ruozhiba dataset
 """
 
-from unsloth import FastLanguageModel, is_bfloat16_supported, PathFastRL
+from unsloth import FastLanguageModel, is_bfloat16_supported, PatchFastRL
 
 PatchFastRL("GRPO", FastLanguageModel)
-
+import torch
 from sentence_transformers import SentenceTransformer
-from reward_score.ruozhiba import (
+from trl import GRPOConfig
+from trl4llm.reward_score.ruozhiba import (
     strict_format_reward_func,
     soft_format_reward_func,
     semantic_similarity_reward_func,
     xmlcount_reward_func,
 )
-from trl import GRPOConfig
-
-max_seq_length = 1024  # 模型支持的最大序列长度
-lora_rank = 64  # LoRA的秩，值越大模型能力越强但速度越慢
 
 
 class RuozhibaConfig:
@@ -58,17 +55,19 @@ class RuozhibaConfig:
 
     def initialize_model(self):
         """Initialize model with LoRA configuration"""
+        lora_rank = 64 
+        # model local path
         model, tokenizer = FastLanguageModel.from_pretrained(
-            model_name="",
+            model_name="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
             max_seq_length=1024,
-            load_in_4bit=True,
+            load_in_4bit=True, # 4 位量化
             fast_inference=True,
+            max_lora_rank=lora_rank,
             gpu_memory_utilization=0.6,
         )
         # lora adapter
         model = FastLanguageModel.get_peft_model(
-            # model local path
-            model="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
+            model,
             r=lora_rank,
             target_modules=[
                 "q_proj",
