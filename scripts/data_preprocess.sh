@@ -4,7 +4,7 @@ LOCAL_DATA_DIR="/Users/little1d/Desktop/Code/trl4llm/data/ruozhiba"
 CACHE_DIR="/Users/little1d/Desktop/Code/trl4llm/data/cache"
 
 
-python "./example/data_preprocess/ruozhiba.py" \
+python "./data_preprocess/ruozhiba.py" \
     --local_dir "$LOCAL_DATA_DIR" \
     --cache_dir "$CACHE_DIR"
 

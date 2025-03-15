@@ -4,7 +4,7 @@ Reward score calculate functions for ruozhiba dataset
 
 import re
 from typing import List
-from sentence_transformers import util
+from sentence_transformers import util, SentenceTransformer
 
 
 def strict_format_reward_func(completions: List[str], **kwargs) -> List[float]:
