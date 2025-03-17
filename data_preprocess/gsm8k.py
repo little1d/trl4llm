@@ -3,6 +3,11 @@ import datasets
 import argparse
 
 
+def extract_hash_answer(text: str) -> str | None:
+    if "####" not in text:
+        return None
+    return text.split("####")[1].strip()
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_dir", default="~/data/gsm8k")
@@ -35,13 +40,14 @@ if __name__ == "__main__":
         def process_fun(example, idx):
             question = example.pop("question")
             answer_raw = example.pop("answer")
+            answer = extract_hash_answer(answer_raw)
             prompt = [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": question}
         ]
             data = {
                 "prompt": prompt,
-                "answer": answer_raw
+                "answer": answer
             }
 
             return data
