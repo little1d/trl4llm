@@ -55,12 +55,12 @@ class RuozhibaConfig:
 
     def initialize_model(self):
         """Initialize model with LoRA configuration"""
-        lora_rank = 64 
+        lora_rank = 64
         # model local path
         model, tokenizer = FastLanguageModel.from_pretrained(
             model_name="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
             max_seq_length=1024,
-            load_in_4bit=True, # 4 位量化
+            load_in_4bit=True,  # 4 位量化
             # fast_inference=True,
             max_lora_rank=lora_rank,
             gpu_memory_utilization=0.7,

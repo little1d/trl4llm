@@ -38,12 +38,12 @@ def train(config_name):
     train_dataset = load_dataset(
         "parquet",
         data_files={"train": config.dataset_config["train_path"]},
-        split="train"
+        split="train",
     )
     test_dataset = load_dataset(
         "parquet",
         data_files={"test": config.dataset_config["test_path"]},
-        split="test"
+        split="test",
     )
 
     # Initialize trainer based on method
