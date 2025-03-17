@@ -64,8 +64,8 @@ def train(config_name):
         ],
     )
     trainer.train()
-
-    model.save_lora(config.save_dir)
+    # save lora adapter
+    model.save_pretrained(config.save_dir)
 
 
 def parse_args():

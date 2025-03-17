@@ -63,7 +63,7 @@ class RuozhibaConfig:
             load_in_4bit=True, # 4 位量化
             # fast_inference=True,
             max_lora_rank=lora_rank,
-            gpu_memory_utilization=0.2,
+            gpu_memory_utilization=0.7,
         )
         # lora adapter
         model = FastLanguageModel.get_peft_model(
@@ -95,7 +95,8 @@ class RuozhibaConfig:
             xmlcount_reward_func,
             soft_format_reward_func,
             strict_format_reward_func,
-            lambda prompts, completions, ground_truths: semantic_similarity_reward_func(
-                completions, semantic_model, ground_truths
+            # 适配 GRPOTrainer 参数结构，隐藏 semantic_model 实现细节
+            lambda prompts, completions, answer: semantic_similarity_reward_func(
+                prompts, completions, semantic_model, answer
             ),
         ]

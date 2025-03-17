@@ -19,7 +19,7 @@ if __name__ == "__main__":
     train_dataset = dataset["train"]
     test_dataset = dataset["test"]
 
-    instruction_following = (
+    SYSTEM_PROMPT = (
         r"首先把推理过程想象成内心独白，然后提供最终的答案。推理过程放在<think></think>标签中，答案放在<answer></answer>标签中。"
         r"""
     然后使用中文按以下格式回答问题:
@@ -35,10 +35,12 @@ if __name__ == "__main__":
     def make_map_fn(split):
 
         def process_fun(example, idx):
-            instruction_raw = example.pop("instruction")
-            prompt = instruction_raw + "" + instruction_following
-
+            instruction = example.pop("instruction")
             answer_raw = example.pop("output")
+            prompt = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": instruction}
+        ]
             # data = {
             #     "data_source": data_source,
             #     "prompt": [{"role": "user", "content": prompt}],
