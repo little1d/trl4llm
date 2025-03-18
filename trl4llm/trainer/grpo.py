@@ -7,12 +7,12 @@ from trl import GRPOConfig, GRPOTrainer
 from datasets import load_dataset
 from swanlab.integration.transformers import SwanLabCallback
 
-from trl4llm.configs import RuozhibaConfig
+from trl4llm.configs import RuozhibaConfig, Gsm8kConfig
 
 
 def get_config_class(config_name: str):
     """Get configuration class by name"""
-    config_map = {"ruozhiba": RuozhibaConfig}
+    config_map = {"ruozhiba": RuozhibaConfig, "gsm8k", Gsm8kConfig}
     if config_name not in config_map:
         raise ValueError(f"Unknown config name: {config_name}")
 
@@ -47,7 +47,8 @@ def train(config_name):
     )
 
     # Initialize trainer based on method
-    # Reference: https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOTrainer
+    # Reference:
+    #   https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOTrainer
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
