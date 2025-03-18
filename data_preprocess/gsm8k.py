@@ -8,6 +8,7 @@ def extract_hash_answer(text: str) -> str | None:
         return None
     return text.split("####")[1].strip()
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_dir", default="~/data/gsm8k")
@@ -17,10 +18,12 @@ if __name__ == "__main__":
 
     data_source = "openai/gsm8k"
 
-    dataset = datasets.load_dataset(data_source, 'main',cache_dir=args.cache_dir)
+    dataset = datasets.load_dataset(
+        data_source, "main", cache_dir=args.cache_dir
+    )
 
-    train_dataset = dataset['train']
-    test_dataset = dataset['test']
+    train_dataset = dataset["train"]
+    test_dataset = dataset["test"]
 
     SYSTEM_PROMPT = (
         r"You FIRST think about the reasoning process as an internal monologue and then provide the final answer. Put the reasoning process in the <think></think> tag, and put the answer in the <answer></answer> tag."
@@ -42,13 +45,10 @@ if __name__ == "__main__":
             answer_raw = example.pop("answer")
             answer = extract_hash_answer(answer_raw)
             prompt = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": question}
-        ]
-            data = {
-                "prompt": prompt,
-                "answer": answer
-            }
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": question},
+            ]
+            data = {"prompt": prompt, "answer": answer}
 
             return data
 

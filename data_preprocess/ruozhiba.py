@@ -38,9 +38,9 @@ if __name__ == "__main__":
             instruction = example.pop("instruction")
             answer_raw = example.pop("output")
             prompt = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": instruction}
-        ]
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": instruction},
+            ]
             # data = {
             #     "data_source": data_source,
             #     "prompt": [{"role": "user", "content": prompt}],
@@ -53,10 +53,7 @@ if __name__ == "__main__":
             #         "answer": answer_raw,
             #     },
             # }
-            data = {
-                "prompt": prompt,
-                "answer": answer_raw
-            }
+            data = {"prompt": prompt, "answer": answer_raw}
 
             return data
 

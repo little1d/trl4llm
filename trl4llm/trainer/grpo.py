@@ -12,7 +12,7 @@ from trl4llm.configs import RuozhibaConfig, Gsm8kConfig
 
 def get_config_class(config_name: str):
     """Get configuration class by name"""
-    config_map = {"ruozhiba": RuozhibaConfig, "gsm8k", Gsm8kConfig}
+    config_map = {"ruozhiba": RuozhibaConfig, "gsm8k": Gsm8kConfig}
     if config_name not in config_map:
         raise ValueError(f"Unknown config name: {config_name}")
 
