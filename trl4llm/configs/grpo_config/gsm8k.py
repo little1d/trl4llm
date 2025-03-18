@@ -16,7 +16,7 @@ max_seq_length = 1024
 lora_rank = 32
 
 
-class Gsm8kConfig:
+class Gsm8kGRPOConfig:
     def __init__(self):
         # Training parameters
         self.training_args = GRPOConfig(
@@ -51,43 +51,43 @@ class Gsm8kConfig:
         # Save path
         self.save_dir = "./gsm8k_grpo_lora"
 
-        def initialize_model(self):
-            """Initialize model with LoRA configuration"""
-            # model locan path
-            model, tokenizer = FastLanguageModel.from_pretrained(
-                model_name="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
-                max_seq_length=max_seq_length,
-                load_in_4bit=True,  # False for LoRA 16bit
-                # fast_inference = True, # Enable vLLM fast inference
-                max_lora_rank=lora_rank,
-                gpu_memory_utilization=0.6,  # Reduce if out of memory
-            )
-            # lora adapter
-            model = FastLanguageModel.get_peft_model(
-                model,
-                r=lora_rank,  # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
-                target_modules=[
-                    "q_proj",
-                    "k_proj",
-                    "v_proj",
-                    "o_proj",
-                    "gate_proj",
-                    "up_proj",
-                    "down_proj",
-                ],  # Remove QKVO if out of memory
-                lora_alpha=lora_rank,
-                use_gradient_checkpointing="unsloth",  # Enable long context finetuning
-                random_state=3407,
-            )
+    def initialize_model(self):
+        """Initialize model with LoRA configuration"""
+        # model local path
+        model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name="/fs-computility/llmit_d/shared/baitianyi/model/Qwen2.5-3B-Instruct",
+            max_seq_length=max_seq_length,
+            load_in_4bit=True,  # False for LoRA 16bit
+            # fast_inference = True, # Enable vLLM fast inference
+            max_lora_rank=lora_rank,
+            gpu_memory_utilization=0.6,  # Reduce if out of memory
+        )
+        # lora adapter
+        model = FastLanguageModel.get_peft_model(
+            model,
+            r=lora_rank,  # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
+            target_modules=[
+                "q_proj",
+                "k_proj",
+                "v_proj",
+                "o_proj",
+                "gate_proj",
+                "up_proj",
+                "down_proj",
+            ],  # Remove QKVO if out of memory
+            lora_alpha=lora_rank,
+            use_gradient_checkpointing="unsloth",  # Enable long context finetuning
+            random_state=3407,
+        )
 
-            return model, tokenizer
+        return model, tokenizer
 
-        def initialize_reward_functions(self):
-            """Initialize reward functions"""
-            return [
-                xmlcount_reward_func,
-                soft_format_reward_func,
-                strict_format_reward_func,
-                int_reward_func,
-                correctness_reward_func,
-            ]
+    def initialize_reward_functions(self):
+        """Initialize reward functions"""
+        return [
+            xmlcount_reward_func,
+            soft_format_reward_func,
+            strict_format_reward_func,
+            int_reward_func,
+            correctness_reward_func,
+        ]

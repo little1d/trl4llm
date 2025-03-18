@@ -16,7 +16,7 @@ from trl4llm.reward_score.ruozhiba import (
 )
 
 
-class RuozhibaConfig:
+class RuozhibaGRPOConfig:
     def __init__(self):
         # Training parameters
         self.training_args = GRPOConfig(
