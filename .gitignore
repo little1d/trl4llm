@@ -18,5 +18,9 @@ playground/
 
 # Cache
 unsloth_compiled_cache/
-swanlog/
 trainer_output
+swanlog/
+**/swanlog/
+wandb/
+**/wandb/
+*.wandb
