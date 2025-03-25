@@ -1,4 +1,6 @@
-from .grpo_config.ruozhiba import RuozhibaGRPOConfig, Gsm8kGRPOConfig
+from .grpo_config.ruozhiba import RuozhibaGRPOConfig
+from .grpo_config.gsm8k import Gsm8kGRPOConfig
+
 from .dpo_config.stack_exchange import StackExchangeDPOConfig
 from .ppo_config.gsm8k import Gsm8kPPOConfig
 

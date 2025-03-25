@@ -2,6 +2,10 @@
 Generic DPO Trainer implementation
 """
 
+from unsloth import PatchDPOTrainer
+
+PatchDPOTrainer()
+
 import argparse
 import os
 from trl import DPOTrainer
@@ -54,6 +58,7 @@ def train(config_name):
         beta=config.training_args.beta,
         train_dataset=train_dataset,
         eval_dataset=test_dataset,
+        tokenizer=tokenizer,
         processing_class=tokenizer,
         max_prompt_length=config.training_args.max_prompt_length,
         max_length=config.training_args.max_ength,

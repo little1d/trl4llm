@@ -1,7 +1,7 @@
 """
 Configuration class for ruozhiba dataset
 """
-
+import unsloth
 from unsloth import FastLanguageModel, is_bfloat16_supported, PatchFastRL
 
 PatchFastRL("GRPO", FastLanguageModel)

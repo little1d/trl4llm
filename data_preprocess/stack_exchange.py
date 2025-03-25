@@ -12,7 +12,14 @@ if __name__ == "__main__":
 
     data_source = "lvwerra/stack-exchange-paired"
 
-    dataset = datasets.load_dataset(data_source, cache_dir=args.cache_dir)
+    dataset = datasets.load_dataset(
+        data_source,
+        cache_dir=args.cache_dir,
+        data_dir="data/rl",
+        # split="train",
+    )
+
+    # dataset = dataset["train"].train_test_split(test_size=0.2, seed=42)
 
     train_dataset = dataset["train"]
     test_dataset = dataset["test"]

@@ -1,8 +1,4 @@
-from unsloth import FastLanguageModel, is_bfloat16_supported, PatchFastRL
-
-# TODO
-PatchFastRL("DPO", FastLanguageModel)
-
+from unsloth import FastLanguageModel, is_bfloat16_supported
 import torch
 from trl import DPOConfig
 
@@ -15,29 +11,23 @@ class StackExchangeDPOConfig:
     def __init__(self):
         # Training parameters
         self.training_args = DPOConfig(
-            learning_rate=5e-4,
-            beta=0.1,
-            weight_decay=0.05,
-            warmup_steps=100,
-            lr_scheduler_type="cosine",
-            optim="paged_adamw_32bit",
-            logging_steps=10,
-            logging_dir="./dpo_logs",
             per_device_train_batch_size=4,
-            per_device_eval_batch_size=1,
             gradient_accumulation_steps=4,
-            gradient_checkpointing=True,
-            gradient_checkpointing_use_reentrant=False,
-            max_prompt_length=max_prompt_length,
-            max_completion_length=max_seq_length - max_prompt_length,
-            max_steps=1000,
-            save_steps=100,
-            eval_steps=100,
-            max_grad_norm=1.0,
-            report_to="wandb",
+            warmup_ratio=0.1,
+            num_train_epochs=2,
+            learning_rate=5e-6,
+            fp16=not is_bfloat16_supported(),
+            bf16=is_bfloat16_supported(),
+            logging_steps=1,
+            optim="adamw_8bit",
+            weight_decay=0.0,
+            lr_scheduler_type="linear",
+            seed=42,
             output_dir="outputs",
-            seed=0,
-            bf16=True,
+            report_to="wandb",
+            max_length=1024,
+            max_prompt_length=512,
+            beta=0.1,
         )
 
         # Dataset configuration
@@ -74,6 +64,7 @@ class StackExchangeDPOConfig:
                 "wte",
             ],
             lora_alpha=lora_rank,
+            use_rslora=False,
             use_gradient_checkpointing="unsloth",
         )
 
